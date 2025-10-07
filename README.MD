@@ -28,7 +28,7 @@ pip install requirements-installer
 Or install from source:
 
 ```bash
-git clone https://github.com/yourusername/requirements-installer.git
+git clone https://github.com/FH-Prevail/requirements_installer.git
 cd requirements-installer
 pip install -e .
 ```
