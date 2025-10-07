@@ -69,10 +69,27 @@ from sklearn.ensemble import RandomForestClassifier
 **Perfect for Jupyter/Colab notebooks:**
 
 ```python
-# Cell 1: Setup
+# Cell 1: Your imports and code
+import pandas as pd
+import torch
+from transformers import AutoModel
+# ... your code ...
+
+# Cell 2: Install everything (run this if imports fail)
 !pip install -q requirements-installer
 from requirements_installer import auto_install
-auto_install()
+auto_install()  # Scans all cells above and installs missing packages!
+
+# Now re-run Cell 1 and it will work!
+```
+
+**Or install dependencies first:**
+
+```python
+# Cell 1: Setup (run first)
+!pip install -q requirements-installer
+from requirements_installer import auto_install
+auto_install()  # If you have imports in other cells, it will find them
 
 # Cell 2+: Your code with any imports
 import torch
@@ -154,17 +171,40 @@ python my_analysis.py  # Auto-installs pandas, numpy, matplotlib!
 ```
 
 ### Example 2: Jupyter/Colab Notebook
+
+**Option A - Fix import errors after they happen:**
 ```python
-# Cell 1: Setup
+# Cell 1: Try to run your code
+import pandas as pd
+import torch
+# ImportError: No module named 'torch'
+
+# Cell 2: Install missing dependencies
 !pip install -q requirements-installer
 from requirements_installer import auto_install
-auto_install()  # Scans entire notebook and installs everything!
+auto_install()  # Scans ALL cells and installs what's needed!
+
+# Cell 3: Re-run Cell 1 - now it works!
+```
+
+**Option B - Set up first (recommended for sharing):**
+```python
+# Cell 1: One-time setup
+!pip install -q requirements-installer
+from requirements_installer import auto_install
+auto_install()  # Will scan entire notebook session
 
 # Cell 2+: Your code
 import torch
 from transformers import AutoModel
-# ... rest of your notebook
+model = AutoModel.from_pretrained('bert-base-uncased')
 ```
+
+**How it works in Colab:**
+- Reads all executed cells from your notebook session
+- Finds all import statements
+- Installs missing packages automatically
+- No need to save the notebook as a file!
 
 ### Example 3: Quick Script Setup
 You clone a repo without a `requirements.txt`:
@@ -330,8 +370,50 @@ git          → GitPython
 - **Dynamic imports**: Limited detection of `importlib.import_module()` calls
 - **Conditional imports**: Treats all imports equally (no context analysis)
 - **Version conflicts**: Doesn't resolve complex dependency conflicts (delegates to pip)
+- **Jupyter/Colab**: Scans all executed cells in the session. Make sure to run cells with imports before calling `auto_install()`
 
 These are deliberate trade-offs for simplicity and speed. For complex projects with intricate dependency trees, consider using Poetry or Pipenv.
+
+---
+
+## 🆘 Troubleshooting
+
+### Google Colab: "Could not detect file to scan"
+
+**Problem:** You get this error in Colab:
+```
+❌ Could not detect file to scan. Please provide file_path argument.
+```
+
+**Solution:** In Colab, `auto_install()` reads from your **executed cells**. Make sure you:
+
+1. **Run cells with imports first**, then run `auto_install()`:
+```python
+# Cell 1: Your code with imports
+import pandas as pd
+import numpy as np
+
+# Cell 2: Run this cell
+!pip install -q requirements-installer  
+from requirements_installer import auto_install
+auto_install()  # This reads Cell 1 and installs pandas, numpy
+```
+
+2. **Or**, if you already ran your code and got import errors, just run `auto_install()` - it will scan all previous cells!
+
+### Command not found
+
+```bash
+# If 'requirements-installer' command not found, try:
+python -m requirements_installer --file mycode.py
+
+# Or check if installed:
+pip show requirements-installer
+```
+
+### Imports not detected
+
+Make sure you've **executed the cells** containing your imports. In Jupyter/Colab, only executed cells are scanned.
 
 ---
 

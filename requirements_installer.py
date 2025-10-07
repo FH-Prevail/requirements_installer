@@ -553,6 +553,37 @@ def is_jupyter_environment() -> bool:
     except NameError:
         return False
 
+def parse_imports_from_ipython() -> Set[str]:
+    """
+    Parse imports from current IPython/Jupyter session by reading cell history.
+    Works in Colab, Jupyter, IPython.
+    """
+    modules: Set[str] = set()
+    try:
+        ipython = get_ipython()  # type: ignore
+        
+        # Get all input cells from the session
+        # In IPython, 'In' is a list where In[1], In[2], etc. are cell contents
+        input_cells = ipython.user_ns.get('In', [])
+        
+        for cell_code in input_cells:
+            if isinstance(cell_code, str) and cell_code.strip():
+                # Skip magic commands and shell commands
+                lines = cell_code.split('\n')
+                filtered_lines = []
+                for line in lines:
+                    stripped = line.strip()
+                    if not stripped.startswith('!') and not stripped.startswith('%'):
+                        filtered_lines.append(line)
+                code = '\n'.join(filtered_lines)
+                
+                # Parse imports from this cell
+                modules |= parse_imports_from_code(code, '<ipython>')
+    except Exception as e:
+        print(f"Warning: Could not read IPython history: {e}")
+    
+    return modules
+
 def auto_install(file_path: Optional[str] = None, use_venv: bool = False, 
                  venv_path: str = ".venv", quiet: bool = False):
     """
@@ -573,45 +604,62 @@ def auto_install(file_path: Optional[str] = None, use_venv: bool = False,
         from requirements_installer import auto_install
         auto_install()
     """
-    # Detect file to scan
+    # Detect if we're in Jupyter/Colab
+    in_jupyter = is_jupyter_environment()
+    
+    # Determine what to scan
     if file_path:
+        # User provided explicit path
         entry_file = Path(file_path).resolve()
+        if not entry_file.exists():
+            print(f"❌ File not found: {entry_file}")
+            return
+        project_root = entry_file.parent
+        
+        # Collect requirements from file
+        if not quiet:
+            print(f"🔍 Scanning: {entry_file.name}")
+        required = collect_requirements(entry_file, project_root)
+        
+    elif in_jupyter:
+        # In Jupyter/Colab - scan the session
+        if not quiet:
+            print(f"🔍 Scanning Jupyter/Colab session...")
+        
+        # Parse imports from IPython history
+        all_modules = parse_imports_from_ipython()
+        
+        # Filter to third-party only
+        stdlib = stdlib_names()
+        third_party = set()
+        for mod in all_modules:
+            if not mod or is_stdlib_module(mod, stdlib):
+                continue
+            third_party.add(mod)
+        
+        # Map to distributions
+        dists = {map_to_distribution(m) for m in third_party}
+        required = set()
+        for d in dists:
+            required.add(d.replace("_", "-"))
+        
+        project_root = Path.cwd()
+        
     else:
-        # Try to auto-detect
-        if is_jupyter_environment():
-            # In Jupyter, we can't easily get the notebook file path
-            # Try to find .ipynb files in current directory
-            cwd = Path.cwd()
-            notebooks = list(cwd.glob("*.ipynb"))
-            if len(notebooks) == 1:
-                entry_file = notebooks[0]
-                if not quiet:
-                    print(f"📓 Auto-detected notebook: {entry_file.name}")
-            elif len(notebooks) > 1:
-                print("⚠️  Multiple notebooks found. Please specify which one:")
-                for i, nb in enumerate(notebooks, 1):
-                    print(f"  {i}. {nb.name}")
-                print("\nUsage: auto_install('your_notebook.ipynb')")
-                return
-            else:
-                print("⚠️  No notebook found. Scanning current directory Python files...")
-                entry_file = None
-        else:
-            # Regular Python script - find the caller
-            entry_file = get_caller_file()
-    
-    if entry_file is None or not entry_file.exists():
-        print("❌ Could not detect file to scan. Please provide file_path argument.")
-        print("   Usage: auto_install('your_script.py')")
-        return
-    
-    project_root = entry_file.parent
-    
-    # Collect requirements
-    if not quiet:
-        print(f"🔍 Scanning: {entry_file.name}")
-    
-    required = collect_requirements(entry_file, project_root)
+        # Regular Python script - try to find the caller
+        entry_file = get_caller_file()
+        
+        if entry_file is None or not entry_file.exists():
+            print("❌ Could not detect file to scan. Please provide file_path argument.")
+            print("   Usage: auto_install('your_script.py')")
+            return
+        
+        project_root = entry_file.parent
+        
+        if not quiet:
+            print(f"🔍 Scanning: {entry_file.name}")
+        
+        required = collect_requirements(entry_file, project_root)
     
     if not required:
         if not quiet:
