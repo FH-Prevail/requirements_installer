@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "requirements-installer"
+version = "1.0.0"
+description = "Automatically detect and install Python dependencies from your code"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Sina Mirshahi", email = "sina7th@gmail.com"}
+]
+keywords = ["pip", "requirements", "dependencies", "automation", "installer"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Installation/Setup",
+]
+
+[project.urls]
+Homepage = "https://github.com/FH-Prevail/requirements_installer"
+Repository = "https://github.com/FH-Prevail/requirements-installer"
+Issues = "https://github.com/FH-Prevail/requirements_installer/issues"
+
+[project.scripts]
+requirements-installer = "requirements_installer:main"
