@@ -14,7 +14,7 @@ auto_install()
 
 ### 2️⃣ Command Line
 ```bash
-requirements-installer --file mycode.py
+requirements_installer --file mycode.py
 ```
 
 ---
@@ -28,16 +28,16 @@ requirements-installer --file mycode.py
 - **🎯 Interactive Version Selection** - Optionally choose specific versions for each package
 - **🔒 Virtual Environment Support** - Create and install into isolated environments
 - **🧠 Intelligent Filtering** - Excludes stdlib and local modules automatically
-- **📝 Module-to-Package Mapping** - Handles 100+ tricky cases like `cv2` → `opencv-python`, `pptx` → `python-pptx`
+- **🔄 Module-to-Package Mapping** - Handles 100+ tricky cases like `cv2` → `opencv-python`, `pptx` → `python-pptx`
 - **🌐 One-Hop Local Import Scanning** - Follows local imports to catch all dependencies
 - **💪 Pure Python** - No external dependencies required
 
 ---
 
-## 📥 Installation
+## 🔥 Installation
 
 ```bash
-pip install requirements-installer
+pip install requirements_installer
 ```
 
 Or install from source:
@@ -76,7 +76,7 @@ from transformers import AutoModel
 # ... your code ...
 
 # Cell 2: Install everything (run this if imports fail)
-!pip install -q requirements-installer
+!pip install -q requirements_installer
 from requirements_installer import auto_install
 auto_install()  # Scans all cells above and installs missing packages!
 
@@ -87,7 +87,7 @@ auto_install()  # Scans all cells above and installs missing packages!
 
 ```python
 # Cell 1: Setup (run first)
-!pip install -q requirements-installer
+!pip install -q requirements_installer
 from requirements_installer import auto_install
 auto_install()  # If you have imports in other cells, it will find them
 
@@ -98,28 +98,28 @@ import transformers
 
 ### Basic Command-Line Usage
 
-**After `pip install requirements-installer`, use it as a command:**
+**After `pip install requirements_installer`, use it as a command:**
 
 ```bash
 # Scan and install dependencies for a Python file
-requirements-installer --file mycode.py
+requirements_installer --file mycode.py
 
 # Works with Jupyter notebooks too!
-requirements-installer --file notebook.ipynb
+requirements_installer --file notebook.ipynb
 ```
 
 ### With Virtual Environment
 
 ```bash
 # Create a venv and install dependencies there
-requirements-installer --file mycode.py --use-venv --venv-path .venv
+requirements_installer --file mycode.py --use-venv --venv-path .venv
 ```
 
 ### Interactive Version Selection
 
 ```bash
 # Choose specific versions for each package
-requirements-installer --file mycode.py --ask-version
+requirements_installer --file mycode.py --ask-version
 ```
 
 Example interaction:
@@ -140,7 +140,7 @@ Install latest version of 'requests'? [Y/n]:
 
 ```bash
 # Just show what would be installed, don't install
-requirements-installer --file mycode.py --print-requirements
+requirements_installer --file mycode.py --print-requirements
 ```
 
 ---
@@ -180,7 +180,7 @@ import torch
 # ImportError: No module named 'torch'
 
 # Cell 2: Install missing dependencies
-!pip install -q requirements-installer
+!pip install -q requirements_installer
 from requirements_installer import auto_install
 auto_install()  # Scans ALL cells and installs what's needed!
 
@@ -190,7 +190,7 @@ auto_install()  # Scans ALL cells and installs what's needed!
 **Option B - Set up first (recommended for sharing):**
 ```python
 # Cell 1: One-time setup
-!pip install -q requirements-installer
+!pip install -q requirements_installer
 from requirements_installer import auto_install
 auto_install()  # Will scan entire notebook session
 
@@ -210,7 +210,7 @@ model = AutoModel.from_pretrained('bert-base-uncased')
 You clone a repo without a `requirements.txt`:
 
 ```bash
-requirements-installer --file app.py
+requirements_installer --file app.py
 ```
 
 Output:
@@ -230,7 +230,7 @@ All requested packages are now present.
 ### Example 4: Isolated Development Environment
 
 ```bash
-requirements-installer --file main.py --use-venv
+requirements_installer --file main.py --use-venv
 ```
 
 Creates a `.venv` folder and installs all dependencies there, keeping your system Python clean.
@@ -238,7 +238,7 @@ Creates a `.venv` folder and installs all dependencies there, keeping your syste
 ### Example 5: Precise Version Control
 
 ```bash
-requirements-installer --file analysis.py --ask-version
+requirements_installer --file analysis.py --ask-version
 ```
 
 Prompts you for each package, letting you pin versions for reproducibility.
@@ -247,10 +247,10 @@ Prompts you for each package, letting you pin versions for reproducibility.
 
 ## 🔧 Command-Line Options
 
-**After installation, use the `requirements-installer` command:**
+**After installation, use the `requirements_installer` command:**
 
 ```
-usage: requirements-installer [-h] --file FILE [--use-venv] 
+usage: requirements_installer [-h] --file FILE [--use-venv] 
                               [--venv-path VENV_PATH]
                               [--print-requirements] [--ask-version]
 
@@ -267,16 +267,16 @@ options:
 **Examples:**
 ```bash
 # Basic usage
-requirements-installer --file mycode.py
+requirements_installer --file mycode.py
 
 # With virtual environment
-requirements-installer --file mycode.py --use-venv
+requirements_installer --file mycode.py --use-venv
 
 # Interactive version selection
-requirements-installer --file mycode.py --ask-version
+requirements_installer --file mycode.py --ask-version
 
 # Scan Jupyter notebook
-requirements-installer --file notebook.ipynb
+requirements_installer --file notebook.ipynb
 ```
 
 **Note:** If you cloned the repository and want to run directly without installation:
@@ -319,7 +319,7 @@ auto_install(quiet=True)
 
 ## 📊 Comparison with Other Tools
 
-| Feature | requirements-installer | pipreqs | pigar | pythonrunscript |
+| Feature | requirements_installer | pipreqs | pigar | pythonrunscript |
 |---------|----------------------|---------|-------|-----------------|
 | Auto-detect imports | ✅ | ✅ | ✅ | ❌ |
 | Auto-install packages | ✅ | ❌ | ❌ | ✅ |
@@ -330,10 +330,10 @@ auto_install(quiet=True)
 | No source file modification | ✅ | ✅ | ✅ | ❌ |
 | One-command operation | ✅ | ❌ | ❌ | ✅ |
 
-**Why requirements-installer?**
+**Why requirements_installer?**
 - **pipreqs/pigar**: Generate `requirements.txt` but don't install (requires 2 steps)
 - **pythonrunscript**: Installs but requires metadata comments in your code
-- **requirements-installer**: 
+- **requirements_installer**: 
   - ✨ Call `auto_install()` directly in your code
   - 📓 Full Jupyter/Colab support
   - 🚀 Self-installing scripts
@@ -394,7 +394,7 @@ import pandas as pd
 import numpy as np
 
 # Cell 2: Run this cell
-!pip install -q requirements-installer  
+!pip install -q requirements_installer  
 from requirements_installer import auto_install
 auto_install()  # This reads Cell 1 and installs pandas, numpy
 ```
@@ -404,11 +404,11 @@ auto_install()  # This reads Cell 1 and installs pandas, numpy
 ### Command not found
 
 ```bash
-# If 'requirements-installer' command not found, try:
+# If 'requirements_installer' command not found, try:
 python -m requirements_installer --file mycode.py
 
 # Or check if installed:
-pip show requirements-installer
+pip show requirements_installer
 ```
 
 ### Imports not detected
@@ -421,8 +421,8 @@ Make sure you've **executed the cells** containing your imports. In Jupyter/Cola
 
 **Command Line** (traditional):
 ```bash
-pip install requirements-installer
-requirements-installer --file mycode.py
+pip install requirements_installer
+requirements_installer --file mycode.py
 python mycode.py
 ```
 

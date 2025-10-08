@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "requirements-installer"
-version = "1.0.3"
+name = "requirements_installer"
+version = "1.0.4"
 description = "Automatically detect and install Python dependencies from your code"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -30,8 +30,8 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/FH-Prevail/requirements_installer"
-Repository = "https://github.com/FH-Prevail/requirements-installer"
+Repository = "https://github.com/FH-Prevail/requirements_installer"
 Issues = "https://github.com/FH-Prevail/requirements_installer/issues"
 
 [project.scripts]
-requirements-installer = "requirements_installer:main"
+requirements_installer = "requirements_installer:main"

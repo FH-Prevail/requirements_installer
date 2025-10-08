@@ -13,7 +13,7 @@ Usage:
     auto_install()
   
   In Jupyter/Colab:
-    !pip install requirements-installer
+    !pip install requirements_installer
     from requirements_installer import auto_install
     auto_install()
 
@@ -600,7 +600,7 @@ def auto_install(file_path: Optional[str] = None, use_venv: bool = False,
         auto_install()
     
     Usage in Jupyter/Colab:
-        !pip install requirements-installer
+        !pip install requirements_installer
         from requirements_installer import auto_install
         auto_install()
     """
