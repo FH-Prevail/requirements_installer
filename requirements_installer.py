@@ -37,237 +37,42 @@ import json
 from pathlib import Path
 from typing import Set, Tuple, Dict, Iterable, List, Optional
 
-# ------- Mapping: module name -> PyPI distribution name -------
-# Comprehensive list of cases where import name != package name
-MODULE_TO_DIST: Dict[str, str] = {
-    # Image Processing
-    "cv2": "opencv-python",
-    "PIL": "Pillow",
-    "Image": "Pillow",
-    "ImageDraw": "Pillow",
-    "ImageFont": "Pillow",
-    "ImageFilter": "Pillow",
-    "skimage": "scikit-image",
-    
-    # Machine Learning / Data Science
-    "sklearn": "scikit-learn",
-    
-    # Deep Learning
-    "tf": "tensorflow",
-    "mpl_toolkits": "matplotlib",
-    
-    # Web / HTTP
-    "bs4": "beautifulsoup4",
-    "BeautifulSoup": "beautifulsoup4",
-    
-    # Web Frameworks
-    "flask": "Flask",
-    "Django": "django",
-    
-    # Database
-    "MySQLdb": "mysqlclient",
-    "psycopg2": "psycopg2-binary",
-    "pymysql": "PyMySQL",
-    "sqlalchemy": "SQLAlchemy",
-    "cx_Oracle": "cx-Oracle",
-    "cassandra": "cassandra-driver",
-    
-    # Document Processing
-    "pptx": "python-pptx",
-    "docx": "python-docx",
-    
-    # Configuration / Data Formats
-    "yaml": "PyYAML",
-    "pyyaml": "PyYAML",
-    "ruamel": "ruamel.yaml",
-    "dotenv": "python-dotenv",
-    
-    # Templating
-    "jinja2": "Jinja2",
-    "mako": "Mako",
-    
-    # Parsing / Processing
-    "markdown": "Markdown",
-    "weasyprint": "WeasyPrint",
-    
-    # Cryptography
-    "Crypto": "pycryptodome",
-    "crypto": "pycryptodome",
-    "nacl": "PyNaCl",
-    "OpenSSL": "pyOpenSSL",
-    
-    # System / OS
-    "magic": "python-magic",
-    "win32com": "pywin32",
-    "pythoncom": "pywin32",
-    
-    # Date/Time
-    "dateutil": "python-dateutil",
-    "delorean": "Delorean",
-    
-    # APIs / Bots / LLMs
-    "telegram": "python-telegram-bot",
-    "discord": "discord.py",
-    "slack_sdk": "slack-sdk",
-    "googleapiclient": "google-api-python-client",
-    "google_auth_oauthlib": "google-auth-oauthlib",
-    
-    # Networking / Serial
-    "serial": "pyserial",
-    "zmq": "pyzmq",
-    "dns": "dnspython",
-    "grpc": "grpcio",
-    
-    # Graphics / GUI
-    "OpenGL": "PyOpenGL",
-    "wx": "wxPython",
-    "tkinter": "tk",
-    "pyaudio": "PyAudio",
-    
-    # Testing
-    "faker": "Faker",
-    
-    # Version Control
-    "git": "GitPython",
-    
-    # Text Processing / NLP
-    "Levenshtein": "python-Levenshtein",
-    "sentence_transformers": "sentence-transformers",
-    "huggingface_hub": "huggingface-hub",
-    
-    # Audio/Video
-    "yt_dlp": "yt-dlp",
-    "youtube_dl": "youtube-dl",
-    "ffmpeg": "ffmpeg-python",
-    "imageio_ffmpeg": "imageio-ffmpeg",
-    "skvideo": "scikit-video",
-    
-    # Job Scheduling
-    "apscheduler": "APScheduler",
-    "python_crontab": "python-crontab",
-    "airflow": "apache-airflow",
-    
-    # AWS / Cloud
-    "google.cloud": "google-cloud",
-    
-    # ML/AI Frameworks
-    "haiku": "dm-haiku",
-    "pyro": "pyro-ppl",
-    "orbit": "orbit-ml",
-    
-    # Time Series
-    "prophet": "prophet",
-    
-    # Data Processing
-    "more_itertools": "more-itertools",
-    "avro": "avro-python3",
-    "ibis": "ibis-framework",
-    "dbt": "dbt-core",
-    
-    # Web Scraping
-    "scrapy_splash": "scrapy-splash",
-    "newspaper": "newspaper3k",
-    "readability": "readability-lxml",
-    
-    # Visualization / Dashboards
-    "torch_geometric": "torch-geometric",
-    "flash_attn": "flash-attn",
-    "comet_ml": "comet-ml",
-    "keras_cv": "keras-cv",
-    "keras_nlp": "keras-nlp",
-    "tensorflow_hub": "tensorflow-hub",
-    "tensorflow_datasets": "tensorflow-datasets",
-    "tensorflow_probability": "tensorflow-probability",
-    "tensorflow_addons": "tensorflow-addons",
-    "tensorflow_text": "tensorflow-text",
-    "tensorflow_io": "tensorflow-io",
-    
-    # Configuration Management
-    "hydra": "hydra-core",
-    "pydantic_settings": "pydantic-settings",
-    
-    # Jupyter / Notebooks
-    "scrapbook": "nteract-scrapbook",
-    "jupyter_client": "jupyter-client",
-    "jupyter_core": "jupyter-core",
-    
-    # Validation
-    "cerberus": "Cerberus",
-    "email_validator": "email-validator",
-    "stdnum": "python-stdnum",
-    
-    # AutoML
-    "auto_sklearn": "auto-sklearn",
-    "category_encoders": "category-encoders",
-    "feature_engine": "feature-engine",
-    "imbalanced_learn": "imbalanced-learn",
-    "imblearn": "imbalanced-learn",
-    "dice_ml": "dice-ml",
-    "great_expectations": "great-expectations",
-    
-    # Geospatial
-    "fiona": "Fiona",
-    "cartopy": "Cartopy",
-    "igraph": "python-igraph",
-    "geohash": "python-geohash",
-    
-    # Web Frameworks (additional)
-    "werkzeug": "Werkzeug",
-    "itsdangerous": "ItsDangerous",
-    "markupsafe": "MarkupSafe",
-    "cherrypy": "CherryPy",
-    "paste": "Paste",
-    "babel": "Babel",
-    
-    # Messaging / Task Queues
-    "kafka": "kafka-python",
-    "confluent_kafka": "confluent-kafka",
-    
-    # Search Engines
-    "opensearch": "opensearch-py",
-    "qdrant_client": "qdrant-client",
-    "weaviate": "weaviate-client",
-    "pinecone": "pinecone-client",
-    "faiss": "faiss-cpu",
-    
-    # Computer Vision
-    "mmseg": "mmsegmentation",
-    "mmaction": "mmaction2",
-    
-    # Plotting
-    "lets_plot": "lets-plot",
-    
-    # Network Analysis  
-    "networkit": "networkit",
-    
-    # Optimization
-    "platypus": "Platypus-Opt",
-    
-    # Model Conversion
-    "onnx_tf": "onnx-tf",
-    
-    # Security / JWT
-    "jwt": "PyJWT",
-    "jose": "python-jose",
-    
-    # Other
-    "ldap": "python-ldap",
-    "daemon": "python-daemon",
-    "editor": "python-editor",
-    "Xlib": "python-xlib",
-    "gi": "PyGObject",
-    "gio": "PyGObject",
-    "dbus": "dbus-python",
-    "curl": "pycurl",
-    "mage": "mage-ai",
-    "IPython": "ipython",
-    "shapely": "Shapely",
-    "when": "when.py",
-    
-    # TimeSeries
-    "tirex": "tirex-ts",
-}
+# ------- Load module mappings from JSON file -------
+def load_module_mappings() -> Dict[str, str]:
+    """
+    Load module-to-package mappings from module_mappings.json.
+    Falls back to minimal mappings if file not found (graceful degradation).
+    """
+    try:
+        # Get the directory where this module is installed
+        module_dir = Path(__file__).parent
+        mappings_file = module_dir / "module_mappings.json"
+        
+        if mappings_file.exists():
+            with open(mappings_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # Remove comment fields (keys starting with '_')
+                return {k: v for k, v in data.items() if not k.startswith('_')}
+        else:
+            # Fallback: basic mappings if JSON file missing
+            return {
+                "cv2": "opencv-python",
+                "PIL": "Pillow",
+                "sklearn": "scikit-learn",
+                "yaml": "PyYAML",
+                "bs4": "beautifulsoup4",
+            }
+    except Exception as e:
+        print(f"Warning: Could not load module mappings: {e}")
+        # Minimal fallback
+        return {
+            "cv2": "opencv-python",
+            "PIL": "Pillow",
+            "sklearn": "scikit-learn",
+        }
 
+# Load mappings at module level
+MODULE_TO_DIST: Dict[str, str] = load_module_mappings()
 
 # Some stdlib fallbacks for older Python (<3.10 without sys.stdlib_module_names)
 STDLIB_FALLBACK = {
@@ -285,6 +90,7 @@ STDLIB_FALLBACK = {
 }
 
 def stdlib_names() -> Set[str]:
+    """Get set of standard library module names."""
     names = set()
     try:
         names.update(getattr(sys, "stdlib_module_names"))  # Py3.10+
@@ -295,9 +101,11 @@ def stdlib_names() -> Set[str]:
     return names
 
 def top_level_module(name: str) -> str:
+    """Extract top-level module from dotted name."""
     return name.split(".", 1)[0]
 
 def is_relative_import(mod: str) -> bool:
+    """Check if module name represents a relative import."""
     return mod.startswith(".")
 
 def find_dynamic_imports(node: ast.AST) -> Set[str]:
@@ -385,6 +193,7 @@ def parse_imports_from_notebook(notebook_path: Path) -> Set[str]:
     return modules
 
 def is_stdlib_module(mod: str, stdlib: Set[str]) -> bool:
+    """Check if module is part of Python standard library."""
     if mod in stdlib:
         return True
     if mod in sys.builtin_module_names:
@@ -426,6 +235,7 @@ def is_local_module(mod: str, project_root: Path) -> bool:
         return pkg_dir.exists() or py_file.exists()
 
 def map_to_distribution(mod: str) -> str:
+    """Map module name to PyPI distribution name."""
     # Prefer an explicit mapping, else use the module name itself
     return MODULE_TO_DIST.get(mod, mod)
 
@@ -495,6 +305,7 @@ def ensure_venv(venv_path: Path) -> Tuple[Path, List[str]]:
     return py, pip_cmd
 
 def current_pip_cmd() -> Tuple[Path, List[str]]:
+    """Get pip command for current Python interpreter."""
     py = Path(sys.executable)
     return py, [str(py), "-m", "pip"]
 
@@ -599,12 +410,85 @@ def is_jupyter_environment() -> bool:
     except NameError:
         return False
 
+def find_jupyter_notebook() -> Optional[Path]:
+    """
+    Try to find the current Jupyter notebook file.
+    Returns the path if found, None otherwise.
+    """
+    try:
+        # Try to get IPython instance
+        ipython = get_ipython()  # type: ignore
+        
+        # Method 1: Check if notebook name is in user namespace (Colab)
+        if 'google.colab' in str(ipython):
+            # In Colab, try common locations
+            import glob
+            # Check if Drive is mounted
+            drive_notebooks = glob.glob('/content/drive/MyDrive/**/*.ipynb', recursive=True)
+            content_notebooks = glob.glob('/content/*.ipynb')
+            
+            all_notebooks = drive_notebooks + content_notebooks
+            if all_notebooks:
+                # Return the most recently modified notebook
+                return Path(max(all_notebooks, key=lambda x: Path(x).stat().st_mtime))
+        
+        # Method 2: For local Jupyter, try to get notebook path from connection file
+        try:
+            import ipykernel
+            connection_file = ipykernel.get_connection_file()
+            kernel_id = connection_file.split('-', 1)[1].split('.')[0]
+            
+            # Look for notebook in current directory and subdirectories
+            import glob
+            for nb_path in glob.glob('**/*.ipynb', recursive=True):
+                nb_path = Path(nb_path)
+                if nb_path.exists():
+                    # Try to read and check if it's using this kernel
+                    try:
+                        with open(nb_path, 'r', encoding='utf-8') as f:
+                            nb_data = json.load(f)
+                            # If we can read it, it's likely the current one
+                            # (This is a heuristic, not perfect)
+                            return nb_path.resolve()
+                    except:
+                        continue
+        except:
+            pass
+        
+        # Method 3: Look for .ipynb files in current directory
+        cwd = Path.cwd()
+        notebooks = list(cwd.glob('*.ipynb'))
+        if len(notebooks) == 1:
+            # If there's only one notebook, it's likely the current one
+            return notebooks[0].resolve()
+        elif len(notebooks) > 1:
+            # Multiple notebooks - return most recently modified
+            return max(notebooks, key=lambda x: x.stat().st_mtime)
+        
+    except Exception as e:
+        pass
+    
+    return None
+
 def parse_imports_from_ipython() -> Set[str]:
     """
-    Parse imports from current IPython/Jupyter session by reading cell history.
-    Works in Colab, Jupyter, IPython.
+    Parse imports from current IPython/Jupyter session.
+    First tries to read all cells from the notebook file.
+    Falls back to reading executed cells from history if file not found.
     """
     modules: Set[str] = set()
+    
+    # Try to find and read the actual notebook file (includes ALL cells)
+    notebook_path = find_jupyter_notebook()
+    if notebook_path and notebook_path.exists():
+        try:
+            print(f"📓 Found notebook: {notebook_path.name}")
+            return parse_imports_from_notebook(notebook_path)
+        except Exception as e:
+            print(f"Warning: Could not parse notebook file: {e}")
+    
+    # Fallback: Read from IPython history (only executed cells)
+    print("ℹ️  Scanning executed cells only (notebook file not found)")
     try:
         ipython = get_ipython()  # type: ignore
         
@@ -761,15 +645,16 @@ def auto_install(file_path: Optional[str] = None, use_venv: bool = False,
             print(output)
 
 def main():
+    """Command-line interface for requirements_installer."""
     ap = argparse.ArgumentParser(
         description="Scan a Python file for third-party imports and install them.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Examples:
-              python requirements_installer.py --file mycode.py
-              python requirements_installer.py --file mycode.py --use-venv
-              python requirements_installer.py --file mycode.py --ask-version
-              python requirements_installer.py --file notebook.ipynb
+              requirements_installer --file mycode.py
+              requirements_installer --file mycode.py --use-venv
+              requirements_installer --file mycode.py --ask-version
+              requirements_installer --file notebook.ipynb
         """),
     )
     ap.add_argument("--file", required=True, help="Entry Python file or Jupyter notebook to scan.")

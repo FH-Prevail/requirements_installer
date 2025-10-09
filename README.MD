@@ -28,8 +28,9 @@ requirements_installer --file mycode.py
 - **🎯 Interactive Version Selection** - Optionally choose specific versions for each package
 - **🔒 Virtual Environment Support** - Create and install into isolated environments
 - **🧠 Intelligent Filtering** - Excludes stdlib and local modules automatically
-- **🔄 Module-to-Package Mapping** - Handles 100+ tricky cases like `cv2` → `opencv-python`, `pptx` → `python-pptx`
-- **🌐 One-Hop Local Import Scanning** - Follows local imports to catch all dependencies
+- **📄 Module-to-Package Mapping** - Handles 150+ tricky cases like `cv2` → `opencv-python`, `pptx` → `python-pptx`
+- **🔧 Easy to Extend** - Add new mappings by editing a simple JSON file
+- **🌍 One-Hop Local Import Scanning** - Follows local imports to catch all dependencies
 - **💪 Pure Python** - No external dependencies required
 
 ---
@@ -172,7 +173,21 @@ python my_analysis.py  # Auto-installs pandas, numpy, matplotlib!
 
 ### Example 2: Jupyter/Colab Notebook
 
-**Option A - Fix import errors after they happen:**
+**Option A - Install before running (recommended):**
+```python
+# Cell 1: One-time setup
+!pip install -q requirements_installer
+from requirements_installer import auto_install
+auto_install()  # Scans ALL cells in notebook (even unexecuted ones!)
+
+# Cell 2+: Now run your code
+import pandas as pd
+import torch
+from transformers import AutoModel
+model = AutoModel.from_pretrained('bert-base-uncased')
+```
+
+**Option B - Fix import errors after they happen:**
 ```python
 # Cell 1: Try to run your code
 import pandas as pd
@@ -187,24 +202,11 @@ auto_install()  # Scans ALL cells and installs what's needed!
 # Cell 3: Re-run Cell 1 - now it works!
 ```
 
-**Option B - Set up first (recommended for sharing):**
-```python
-# Cell 1: One-time setup
-!pip install -q requirements_installer
-from requirements_installer import auto_install
-auto_install()  # Will scan entire notebook session
-
-# Cell 2+: Your code
-import torch
-from transformers import AutoModel
-model = AutoModel.from_pretrained('bert-base-uncased')
-```
-
-**How it works in Colab:**
-- Reads all executed cells from your notebook session
-- Finds all import statements
+**How it works in Colab/Jupyter:**
+- Automatically finds and reads your notebook file
+- Scans **ALL cells** (even unexecuted ones!)
 - Installs missing packages automatically
-- No need to save the notebook as a file!
+- No need to execute cells first - just call `auto_install()`
 
 ### Example 3: Quick Script Setup
 You clone a repo without a `requirements.txt`:
@@ -310,7 +312,7 @@ auto_install(quiet=True)
 1. **Parse Imports**: Uses Python's AST to find all `import` and `from ... import` statements
 2. **Filter Standard Library**: Removes built-in Python modules (e.g., `os`, `sys`, `json`)
 3. **Filter Local Modules**: Excludes your project's own modules
-4. **Map Module Names**: Converts import names to PyPI package names (e.g., `cv2` → `opencv-python`)
+4. **Map Module Names**: Converts import names to PyPI package names using `module_mappings.json` (e.g., `cv2` → `opencv-python`)
 5. **Check Installation**: Queries what's already installed to avoid redundant work
 6. **Install Packages**: Uses pip to install missing packages
 7. **Verify**: Confirms all required packages are present
@@ -329,6 +331,7 @@ auto_install(quiet=True)
 | Virtual environment support | ✅ | ❌ | ❌ | ✅ |
 | No source file modification | ✅ | ✅ | ✅ | ❌ |
 | One-command operation | ✅ | ❌ | ❌ | ✅ |
+| Easy to extend mappings | ✅ | ❌ | ❌ | ❌ |
 
 **Why requirements_installer?**
 - **pipreqs/pigar**: Generate `requirements.txt` but don't install (requires 2 steps)
@@ -337,14 +340,16 @@ auto_install(quiet=True)
   - ✨ Call `auto_install()` directly in your code
   - 📓 Full Jupyter/Colab support
   - 🚀 Self-installing scripts
-  - 💪 100+ module-to-package mappings
+  - 💪 150+ module-to-package mappings
+  - 🔧 Easy to extend via JSON file
 
 ---
 
 ## 🧪 Module-to-Package Mappings
 
-The tool includes smart mappings for 100+ common cases where the import name differs from the PyPI package name:
+The tool includes smart mappings for 150+ common cases where the import name differs from the PyPI package name. These mappings are stored in `module_mappings.json` for easy maintenance and contributions.
 
+**Common examples:**
 ```python
 cv2          → opencv-python
 PIL          → Pillow
@@ -359,8 +364,21 @@ telegram     → python-telegram-bot
 discord      → discord.py
 serial       → pyserial
 git          → GitPython
-# ... and 90+ more!
+# ... and 140+ more!
 ```
+
+### Adding Your Own Mappings
+
+It's easy to contribute new mappings! Just edit `module_mappings.json`:
+
+```json
+{
+  "your_import_name": "pypi-package-name",
+  "another_module": "another-package"
+}
+```
+
+Then submit a pull request or use your custom version locally.
 
 ---
 
@@ -370,7 +388,7 @@ git          → GitPython
 - **Dynamic imports**: Limited detection of `importlib.import_module()` calls
 - **Conditional imports**: Treats all imports equally (no context analysis)
 - **Version conflicts**: Doesn't resolve complex dependency conflicts (delegates to pip)
-- **Jupyter/Colab**: Scans all executed cells in the session. Make sure to run cells with imports before calling `auto_install()`
+- **Jupyter notebooks**: Best results when notebook is saved. If not found, falls back to scanning executed cells only
 
 These are deliberate trade-offs for simplicity and speed. For complex projects with intricate dependency trees, consider using Poetry or Pipenv.
 
@@ -378,28 +396,21 @@ These are deliberate trade-offs for simplicity and speed. For complex projects w
 
 ## 🆘 Troubleshooting
 
-### Google Colab: "Could not detect file to scan"
+### Imports not detected in Jupyter/Colab
 
-**Problem:** You get this error in Colab:
-```
-❌ Could not detect file to scan. Please provide file_path argument.
-```
+**Problem:** Some imports are not being detected.
 
-**Solution:** In Colab, `auto_install()` reads from your **executed cells**. Make sure you:
+**Solution:** 
 
-1. **Run cells with imports first**, then run `auto_install()`:
+The tool automatically tries to find your notebook file to scan ALL cells. If it can't find the file:
+
+1. **Save your notebook** - This helps the tool locate and read it
+2. **For Colab**: Mount Google Drive if your notebook is stored there:
 ```python
-# Cell 1: Your code with imports
-import pandas as pd
-import numpy as np
-
-# Cell 2: Run this cell
-!pip install -q requirements_installer  
-from requirements_installer import auto_install
-auto_install()  # This reads Cell 1 and installs pandas, numpy
+from google.colab import drive
+drive.mount('/content/drive')
 ```
-
-2. **Or**, if you already ran your code and got import errors, just run `auto_install()` - it will scan all previous cells!
+3. **Fallback behavior**: If the notebook file isn't found, it scans executed cells only. In this case, run cells with imports before calling `auto_install()`.
 
 ### Command not found
 
@@ -410,10 +421,6 @@ python -m requirements_installer --file mycode.py
 # Or check if installed:
 pip show requirements_installer
 ```
-
-### Imports not detected
-
-Make sure you've **executed the cells** containing your imports. In Jupyter/Colab, only executed cells are scanned.
 
 ---
 
@@ -441,7 +448,7 @@ Contributions are welcome! Here are some ways you can help:
 - 💡 Suggest new features or improvements
 - 📝 Improve documentation
 - 🔧 Submit pull requests
-- ⭐ Add more module-to-package mappings
+- ⭐ Add more module-to-package mappings to `module_mappings.json`
 
 ### Development Setup
 
@@ -452,6 +459,17 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e .
 ```
+
+### Adding New Mappings
+
+To add new module-to-package mappings:
+
+1. Edit `module_mappings.json`
+2. Add your mapping: `"import_name": "pypi-package-name"`
+3. Test it works
+4. Submit a pull request!
+
+**Note:** Only add mappings where the import name differs from the package name. No need for entries like `"torch": "torch"`.
 
 ### Running Tests
 
@@ -481,7 +499,7 @@ Inspired by:
 - **Issues**: [GitHub Issues](https://github.com/FH-Prevail/requirements_installer/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/FH-Prevail/requirements_installer/discussions)
 - **Repository**: [github.com/FH-Prevail/requirements_installer](https://github.com/FH-Prevail/requirements_installer)
-- **Author**: Sina
+- **Author**: Sina Mirshahi
 
 ---
 
@@ -496,7 +514,7 @@ Inspired by:
 
 ---
 
-**Made with ❤️ by Sina**
+**Made with ❤️ by Sina Mirshahi**
 
 **Star this repo if you find it useful!** ⭐ 
 

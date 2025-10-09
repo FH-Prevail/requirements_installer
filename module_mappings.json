@@ -1,0 +1,206 @@
+{
+  "_comment": "Mapping of Python import names to PyPI package names",
+  "_note": "ONLY include entries where import name differs from package name",
+  
+  "cv2": "opencv-python",
+  "PIL": "Pillow",
+  "Image": "Pillow",
+  "ImageDraw": "Pillow",
+  "ImageFont": "Pillow",
+  "ImageFilter": "Pillow",
+  "ImageEnhance": "Pillow",
+  "ImageOps": "Pillow",
+  "skimage": "scikit-image",
+  
+  "sklearn": "scikit-learn",
+  
+  "tf": "tensorflow",
+  "mpl_toolkits": "matplotlib",
+  
+  "bs4": "beautifulsoup4",
+  "BeautifulSoup": "beautifulsoup4",
+  
+  "flask": "Flask",
+  "Django": "django",
+  
+  "MySQLdb": "mysqlclient",
+  "psycopg2": "psycopg2-binary",
+  "pymysql": "PyMySQL",
+  "sqlalchemy": "SQLAlchemy",
+  "cx_Oracle": "cx-Oracle",
+  "cassandra": "cassandra-driver",
+  
+  "pptx": "python-pptx",
+  "docx": "python-docx",
+  "PyPDF2": "PyPDF2",
+  
+  "yaml": "PyYAML",
+  "pyyaml": "PyYAML",
+  "ruamel": "ruamel.yaml",
+  "dotenv": "python-dotenv",
+  
+  "jinja2": "Jinja2",
+  "mako": "Mako",
+  
+  "markdown": "Markdown",
+  "weasyprint": "WeasyPrint",
+  
+  "Crypto": "pycryptodome",
+  "crypto": "pycryptodome",
+  "nacl": "PyNaCl",
+  "OpenSSL": "pyOpenSSL",
+  
+  "magic": "python-magic",
+  "win32com": "pywin32",
+  "pythoncom": "pywin32",
+  "winreg": "pywin32",
+  
+  "dateutil": "python-dateutil",
+  "delorean": "Delorean",
+  
+  "telegram": "python-telegram-bot",
+  "discord": "discord.py",
+  "slack_sdk": "slack-sdk",
+  "slack": "slack-sdk",
+  "googleapiclient": "google-api-python-client",
+  "google_auth_oauthlib": "google-auth-oauthlib",
+  
+  "serial": "pyserial",
+  "zmq": "pyzmq",
+  "dns": "dnspython",
+  "grpc": "grpcio",
+  
+  "OpenGL": "PyOpenGL",
+  "wx": "wxPython",
+  "tkinter": "tk",
+  "pyaudio": "PyAudio",
+  
+  "faker": "Faker",
+  
+  "git": "GitPython",
+  "github": "PyGithub",
+  "gitlab": "python-gitlab",
+  
+  "Levenshtein": "python-Levenshtein",
+  "sentence_transformers": "sentence-transformers",
+  "huggingface_hub": "huggingface-hub",
+  
+  "yt_dlp": "yt-dlp",
+  "youtube_dl": "youtube-dl",
+  "ffmpeg": "ffmpeg-python",
+  "imageio_ffmpeg": "imageio-ffmpeg",
+  "skvideo": "scikit-video",
+  
+  "apscheduler": "APScheduler",
+  "python_crontab": "python-crontab",
+  "airflow": "apache-airflow",
+  
+  "google.cloud": "google-cloud",
+  
+  "haiku": "dm-haiku",
+  "pyro": "pyro-ppl",
+  "orbit": "orbit-ml",
+  
+  "prophet": "prophet",
+  
+  "more_itertools": "more-itertools",
+  "avro": "avro-python3",
+  "ibis": "ibis-framework",
+  "dbt": "dbt-core",
+  
+  "scrapy": "Scrapy",
+  "scrapy_splash": "scrapy-splash",
+  "newspaper": "newspaper3k",
+  "readability": "readability-lxml",
+  
+  "torch_geometric": "torch-geometric",
+  "flash_attn": "flash-attn",
+  
+  "comet_ml": "comet-ml",
+  
+  "keras_cv": "keras-cv",
+  "keras_nlp": "keras-nlp",
+  "tensorflow_hub": "tensorflow-hub",
+  "tensorflow_datasets": "tensorflow-datasets",
+  "tensorflow_probability": "tensorflow-probability",
+  "tensorflow_addons": "tensorflow-addons",
+  "tensorflow_text": "tensorflow-text",
+  "tensorflow_io": "tensorflow-io",
+  
+  "hydra": "hydra-core",
+  "pydantic_settings": "pydantic-settings",
+  
+  "scrapbook": "nteract-scrapbook",
+  "jupyter_client": "jupyter-client",
+  "jupyter_core": "jupyter-core",
+  
+  "cerberus": "Cerberus",
+  "email_validator": "email-validator",
+  "stdnum": "python-stdnum",
+  
+  "auto_sklearn": "auto-sklearn",
+  "category_encoders": "category-encoders",
+  "feature_engine": "feature-engine",
+  "imbalanced_learn": "imbalanced-learn",
+  "imblearn": "imbalanced-learn",
+  "dice_ml": "dice-ml",
+  "great_expectations": "great-expectations",
+  
+  "fiona": "Fiona",
+  "cartopy": "Cartopy",
+  "igraph": "python-igraph",
+  "geohash": "python-geohash",
+  
+  "werkzeug": "Werkzeug",
+  "itsdangerous": "ItsDangerous",
+  "markupsafe": "MarkupSafe",
+  "cherrypy": "CherryPy",
+  "paste": "Paste",
+  "babel": "Babel",
+  "wtforms": "WTForms",
+  
+  "kafka": "kafka-python",
+  "confluent_kafka": "confluent-kafka",
+  
+  "opensearch": "opensearch-py",
+  "qdrant_client": "qdrant-client",
+  "weaviate": "weaviate-client",
+  "pinecone": "pinecone-client",
+  "faiss": "faiss-cpu",
+  "milvus": "pymilvus",
+  
+  "mmseg": "mmsegmentation",
+  "mmaction": "mmaction2",
+  "mmdet": "mmdetection",
+  
+  "lets_plot": "lets-plot",
+  
+  "networkit": "networkit",
+  "graph_tool": "graph-tool",
+  
+  "platypus": "Platypus-Opt",
+  
+  "onnx_tf": "onnx-tf",
+  
+  "jwt": "PyJWT",
+  "jose": "python-jose",
+  
+  "ldap": "python-ldap",
+  "daemon": "python-daemon",
+  "editor": "python-editor",
+  "Xlib": "python-xlib",
+  "gi": "PyGObject",
+  "gio": "PyGObject",
+  "dbus": "dbus-python",
+  "curl": "pycurl",
+  "mage": "mage-ai",
+  "IPython": "ipython",
+  "shapely": "Shapely",
+  "when": "when.py",
+  
+  "tirex": "tirex-ts",
+  
+  "llama_index": "llama-index",
+  
+  "socketio": "python-socketio"
+}
