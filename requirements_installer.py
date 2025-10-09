@@ -43,185 +43,231 @@ MODULE_TO_DIST: Dict[str, str] = {
     # Image Processing
     "cv2": "opencv-python",
     "PIL": "Pillow",
+    "Image": "Pillow",
+    "ImageDraw": "Pillow",
+    "ImageFont": "Pillow",
+    "ImageFilter": "Pillow",
     "skimage": "scikit-image",
     
     # Machine Learning / Data Science
     "sklearn": "scikit-learn",
-    "xgboost": "xgboost",
-    "lightgbm": "lightgbm",
-    "catboost": "catboost",
-    "skops": "skops",
-    "safetensors": "safetensors",
     
     # Deep Learning
-    "torch": "torch",
-    "torchvision": "torchvision",
-    "torchaudio": "torchaudio",
-    "tensorflow": "tensorflow",
     "tf": "tensorflow",
-    "jax": "jax",
-    "transformers": "transformers",
-    
-    # Data Processing
-    "numpy": "numpy",
-    "pandas": "pandas",
-    "scipy": "scipy",
-    "statsmodels": "statsmodels",
-    
-    # Visualization
-    "matplotlib": "matplotlib",
     "mpl_toolkits": "matplotlib",
-    "seaborn": "seaborn",
-    "plotly": "plotly",
     
     # Web / HTTP
-    "requests": "requests",
-    "httpx": "httpx",
     "bs4": "beautifulsoup4",
     "BeautifulSoup": "beautifulsoup4",
-    "selenium": "selenium",
-    "scrapy": "scrapy",
     
     # Web Frameworks
-    "fastapi": "fastapi",
-    "starlette": "starlette",
-    "uvicorn": "uvicorn",
     "flask": "Flask",
     "Django": "django",
-    "tornado": "tornado",
     
     # Database
     "MySQLdb": "mysqlclient",
     "psycopg2": "psycopg2-binary",
-    "pymongo": "pymongo",
+    "pymysql": "PyMySQL",
     "sqlalchemy": "SQLAlchemy",
-    "redis": "redis",
+    "cx_Oracle": "cx-Oracle",
+    "cassandra": "cassandra-driver",
     
     # Document Processing
     "pptx": "python-pptx",
     "docx": "python-docx",
-    "openpyxl": "openpyxl",
-    "xlrd": "xlrd",
-    "xlwt": "xlwt",
-    "PyPDF2": "PyPDF2",
-    "pdfplumber": "pdfplumber",
     
     # Configuration / Data Formats
     "yaml": "PyYAML",
     "pyyaml": "PyYAML",
     "ruamel": "ruamel.yaml",
-    "toml": "toml",
     "dotenv": "python-dotenv",
-    "orjson": "orjson",
-    "ujson": "ujson",
-    "msgpack": "msgpack",
     
     # Templating
     "jinja2": "Jinja2",
     "mako": "Mako",
     
     # Parsing / Processing
-    "lxml": "lxml",
     "markdown": "Markdown",
     "weasyprint": "WeasyPrint",
     
     # Cryptography
     "Crypto": "pycryptodome",
     "crypto": "pycryptodome",
-    "cryptography": "cryptography",
     "nacl": "PyNaCl",
+    "OpenSSL": "pyOpenSSL",
     
     # System / OS
-    "psutil": "psutil",
     "magic": "python-magic",
     "win32com": "pywin32",
     "pythoncom": "pywin32",
     
-    # CLI / Terminal
-    "click": "click",
-    "typer": "typer",
-    "rich": "rich",
-    "tqdm": "tqdm",
-    "tabulate": "tabulate",
-    "colorama": "colorama",
-    "termcolor": "termcolor",
-    
-    # Logging / Debugging
-    "loguru": "loguru",
-    
     # Date/Time
     "dateutil": "python-dateutil",
+    "delorean": "Delorean",
     
-    # APIs / Bots
+    # APIs / Bots / LLMs
     "telegram": "python-telegram-bot",
     "discord": "discord.py",
-    "tweepy": "tweepy",
     "slack_sdk": "slack-sdk",
-    "anthropic": "anthropic",
-    "openai": "openai",
+    "googleapiclient": "google-api-python-client",
+    "google_auth_oauthlib": "google-auth-oauthlib",
     
     # Networking / Serial
     "serial": "pyserial",
-    "paramiko": "paramiko",
-    "fabric": "fabric",
+    "zmq": "pyzmq",
+    "dns": "dnspython",
+    "grpc": "grpcio",
     
     # Graphics / GUI
     "OpenGL": "PyOpenGL",
     "wx": "wxPython",
     "tkinter": "tk",
+    "pyaudio": "PyAudio",
     
     # Testing
-    "pytest": "pytest",
-    "unittest2": "unittest2",
-    "mock": "mock",
     "faker": "Faker",
-    
-    # Code Quality
-    "black": "black",
-    "flake8": "flake8",
-    "pylint": "pylint",
-    "mypy": "mypy",
     
     # Version Control
     "git": "GitPython",
     
-    # Text Processing
+    # Text Processing / NLP
     "Levenshtein": "python-Levenshtein",
-    "fuzzywuzzy": "fuzzywuzzy",
-    "nltk": "nltk",
-    "spacy": "spacy",
+    "sentence_transformers": "sentence-transformers",
+    "huggingface_hub": "huggingface-hub",
     
     # Audio/Video
-    "pydub": "pydub",
-    "moviepy": "moviepy",
-    
-    # Math / Scientific
-    "sympy": "sympy",
+    "yt_dlp": "yt-dlp",
+    "youtube_dl": "youtube-dl",
+    "ffmpeg": "ffmpeg-python",
+    "imageio_ffmpeg": "imageio-ffmpeg",
+    "skvideo": "scikit-video",
     
     # Job Scheduling
-    "celery": "celery",
     "apscheduler": "APScheduler",
-    
-    # Compression
-    "bz2file": "bz2file",
+    "python_crontab": "python-crontab",
+    "airflow": "apache-airflow",
     
     # AWS / Cloud
-    "boto3": "boto3",
-    "botocore": "botocore",
     "google.cloud": "google-cloud",
     
-    # Misc Popular Packages
-    "arrow": "arrow",
-    "pendulum": "pendulum",
-    "humanize": "humanize",
+    # ML/AI Frameworks
+    "haiku": "dm-haiku",
+    "pyro": "pyro-ppl",
+    "orbit": "orbit-ml",
+    
+    # Time Series
+    "prophet": "prophet",
+    
+    # Data Processing
     "more_itertools": "more-itertools",
-    "toolz": "toolz",
-    "jsonschema": "jsonschema",
-    "pydantic": "pydantic",
-    "attrs": "attrs",
-    "cattrs": "cattrs",
-    "marshmallow": "marshmallow",
+    "avro": "avro-python3",
+    "ibis": "ibis-framework",
+    "dbt": "dbt-core",
+    
+    # Web Scraping
+    "scrapy_splash": "scrapy-splash",
+    "newspaper": "newspaper3k",
+    "readability": "readability-lxml",
+    
+    # Visualization / Dashboards
+    "torch_geometric": "torch-geometric",
+    "flash_attn": "flash-attn",
+    "comet_ml": "comet-ml",
+    "keras_cv": "keras-cv",
+    "keras_nlp": "keras-nlp",
+    "tensorflow_hub": "tensorflow-hub",
+    "tensorflow_datasets": "tensorflow-datasets",
+    "tensorflow_probability": "tensorflow-probability",
+    "tensorflow_addons": "tensorflow-addons",
+    "tensorflow_text": "tensorflow-text",
+    "tensorflow_io": "tensorflow-io",
+    
+    # Configuration Management
+    "hydra": "hydra-core",
+    "pydantic_settings": "pydantic-settings",
+    
+    # Jupyter / Notebooks
+    "scrapbook": "nteract-scrapbook",
+    "jupyter_client": "jupyter-client",
+    "jupyter_core": "jupyter-core",
+    
+    # Validation
+    "cerberus": "Cerberus",
+    "email_validator": "email-validator",
+    "stdnum": "python-stdnum",
+    
+    # AutoML
+    "auto_sklearn": "auto-sklearn",
+    "category_encoders": "category-encoders",
+    "feature_engine": "feature-engine",
+    "imbalanced_learn": "imbalanced-learn",
+    "imblearn": "imbalanced-learn",
+    "dice_ml": "dice-ml",
+    "great_expectations": "great-expectations",
+    
+    # Geospatial
+    "fiona": "Fiona",
+    "cartopy": "Cartopy",
+    "igraph": "python-igraph",
+    "geohash": "python-geohash",
+    
+    # Web Frameworks (additional)
+    "werkzeug": "Werkzeug",
+    "itsdangerous": "ItsDangerous",
+    "markupsafe": "MarkupSafe",
+    "cherrypy": "CherryPy",
+    "paste": "Paste",
+    "babel": "Babel",
+    
+    # Messaging / Task Queues
+    "kafka": "kafka-python",
+    "confluent_kafka": "confluent-kafka",
+    
+    # Search Engines
+    "opensearch": "opensearch-py",
+    "qdrant_client": "qdrant-client",
+    "weaviate": "weaviate-client",
+    "pinecone": "pinecone-client",
+    "faiss": "faiss-cpu",
+    
+    # Computer Vision
+    "mmseg": "mmsegmentation",
+    "mmaction": "mmaction2",
+    
+    # Plotting
+    "lets_plot": "lets-plot",
+    
+    # Network Analysis  
+    "networkit": "networkit",
+    
+    # Optimization
+    "platypus": "Platypus-Opt",
+    
+    # Model Conversion
+    "onnx_tf": "onnx-tf",
+    
+    # Security / JWT
+    "jwt": "PyJWT",
+    "jose": "python-jose",
+    
+    # Other
+    "ldap": "python-ldap",
+    "daemon": "python-daemon",
+    "editor": "python-editor",
+    "Xlib": "python-xlib",
+    "gi": "PyGObject",
+    "gio": "PyGObject",
+    "dbus": "dbus-python",
+    "curl": "pycurl",
+    "mage": "mage-ai",
+    "IPython": "ipython",
+    "shapely": "Shapely",
+    "when": "when.py",
+    
+    # TimeSeries
+    "tirex": "tirex-ts",
 }
+
 
 # Some stdlib fallbacks for older Python (<3.10 without sys.stdlib_module_names)
 STDLIB_FALLBACK = {
