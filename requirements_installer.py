@@ -214,6 +214,7 @@ def is_stdlib_module(mod: str, stdlib: Set[str]) -> bool:
 def is_local_module(mod: str, project_root: Path) -> bool:
     """
     Decide if 'mod' resolves to a module/package under project_root.
+    Excludes virtual environments (venv, .venv, env, etc.)
     """
     try:
         spec = importlib.util.find_spec(mod)
@@ -223,9 +224,32 @@ def is_local_module(mod: str, project_root: Path) -> bool:
             pkg_dir = project_root / mod
             py_file = project_root / f"{mod}.py"
             return pkg_dir.exists() or py_file.exists()
+        
         origin = Path(spec.origin).resolve()
+        
+        # Check if origin is under project_root
         try:
-            return project_root.resolve() in origin.parents
+            if project_root.resolve() not in origin.parents:
+                return False
+            
+            # It's under project_root, but check if it's in a venv
+            # Common venv directory names
+            venv_names = {'venv', '.venv', 'env', '.env', 'virtualenv', '.virtualenv'}
+            
+            # Check if any parent directory is a venv
+            for parent in origin.parents:
+                if parent == project_root:
+                    break
+                if parent.name.lower() in venv_names:
+                    # It's in a venv, so NOT a local module
+                    return False
+                # Also check for common venv indicators
+                if (parent / 'pyvenv.cfg').exists():
+                    return False
+            
+            # It's under project_root and NOT in a venv, so it IS local
+            return True
+            
         except Exception:
             return False
     except Exception:
@@ -325,17 +349,20 @@ def get_installed_versions(pip_python: Path, packages: Set[str]) -> Dict[str, st
     Get installed versions for a set of packages.
     Returns dict: {package_name: version}
     """
-    code = (
-        "import importlib.metadata as m, json, sys; "
-        f"packages = {list(packages)}; "
-        "result = {{}}; "
-        "for pkg in packages: "
-        "    try: "
-        "        result[pkg] = m.version(pkg); "
-        "    except: "
-        "        result[pkg] = 'unknown'; "
-        "print(json.dumps(result))"
-    )
+    # Create a properly formatted single-line Python command
+    packages_list = list(packages)
+    code = f"""
+import importlib.metadata as m
+import json
+result = {{}}
+for pkg in {packages_list}:
+    try:
+        result[pkg] = m.version(pkg)
+    except:
+        result[pkg] = 'unknown'
+print(json.dumps(result))
+""".strip()
+    
     try:
         out = subprocess.check_output([str(pip_python), "-c", code], text=True)
         return json.loads(out)
@@ -668,6 +695,21 @@ def auto_install(file_path: Optional[str] = None, use_venv: bool = False,
     if not needed:
         if not quiet:
             print(f"✅ All packages already installed: {', '.join(sorted(required))}")
+        
+        # Even if nothing to install, generate requirements.txt if requested
+        if generate_requirements and required:
+            if not quiet:
+                print(f"\n📝 Generating {requirements_path}...")
+            
+            packages_versions = get_installed_versions(py_exe, required)
+            req_path = Path(requirements_path)
+            
+            if generate_requirements_file(packages_versions, req_path):
+                if not quiet:
+                    print(f"✅ Generated {requirements_path} with {len(packages_versions)} packages")
+            else:
+                print(f"❌ Failed to generate {requirements_path}")
+        
         return
     
     # Install missing packages
@@ -698,12 +740,17 @@ def auto_install(file_path: Optional[str] = None, use_venv: bool = False,
             print(output)
     
     # Generate requirements.txt if requested
-    if generate_requirements and (newly or already):
+    if generate_requirements and required:  # Generate if ANY packages are required
         if not quiet:
             print(f"\n📝 Generating {requirements_path}...")
         
-        # Get versions for all required packages
+        # Get versions for ALL required packages (both new and already installed)
         packages_versions = get_installed_versions(py_exe, required)
+        
+        # Debug: Show what we're including
+        if not quiet:
+            found_count = sum(1 for v in packages_versions.values() if v != 'unknown')
+            print(f"   Including {found_count} packages with versions")
         
         req_path = Path(requirements_path)
         if generate_requirements_file(packages_versions, req_path):
@@ -785,7 +832,27 @@ def main():
     if not needed:
         print("All required packages are already installed.")
         print("Packages:", ", ".join(sorted(required)))
-        return
+        
+        # Generate requirements.txt even if nothing to install
+        if args.generate_requirements and required:
+            print(f"\n📝 Generating {args.requirements_path}...")
+            
+            packages_versions = get_installed_versions(py_exe, required)
+            found_count = sum(1 for v in packages_versions.values() if v != 'unknown')
+            print(f"   Including {found_count} packages with versions")
+            
+            req_path = Path(args.requirements_path)
+            
+            if generate_requirements_file(packages_versions, req_path):
+                print(f"✅ Generated {args.requirements_path} with {len(packages_versions)} packages")
+                print(f"\nYou can now install these dependencies with:")
+                print(f"  pip install -r {args.requirements_path}")
+                sys.exit(0)
+            else:
+                print(f"❌ Failed to generate {args.requirements_path}")
+                sys.exit(1)
+        
+        sys.exit(0)
 
     ok, output = install_packages(pip_cmd, needed, ask_version=args.ask_version)
     
@@ -815,9 +882,16 @@ def main():
         print("All requested packages are now present.")
         
         # Generate requirements.txt if requested
-        if args.generate_requirements:
+        if args.generate_requirements and required:
             print(f"\n📝 Generating {args.requirements_path}...")
+            
+            # Get versions for ALL required packages (both newly installed and already present)
             packages_versions = get_installed_versions(py_exe, required)
+            
+            # Show what we're including
+            found_count = sum(1 for v in packages_versions.values() if v != 'unknown')
+            print(f"   Including {found_count} packages with versions")
+            
             req_path = Path(args.requirements_path)
             
             if generate_requirements_file(packages_versions, req_path):
