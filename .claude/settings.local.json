@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python -m pytest tests/ -v)",
-      "Bash(python -m build)",
-      "Bash(python -m twine upload dist/requirements_installer-1.2.0* --username __token__ --password \"pypi-AgEIcHlwaS5vcmcCJDUyZTA0MDkwLTRhZmUtNDQ1OC05YTEzLWU4NjExMTlmZTg2YgACKlszLCI3NWI1YTlhOS0zYjUxLTRmNGEtOWEwZC05YWQzNzJhZTU0YjYiXQAABiBrFcSQRdPqT_RlXccHX7xcIk2EKDXsEEgFK4ozoGfF4w\")"
-    ]
-  }
-}
