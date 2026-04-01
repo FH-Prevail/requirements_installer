@@ -2,3 +2,4 @@ include README.md
 include LICENSE
 include pyproject.toml
 include requirements_installer.py
+include module_mappings.json
